@@ -1,0 +1,181 @@
+.add-book-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  padding: 20px;
+}
+
+.add-book-modal {
+  background: white;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(107, 71, 84, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid #f0bbc9;
+  position: sticky;
+  top: 0;
+  background: white;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--primary-dark, #6b4754);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.8rem;
+  color: #999;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.error-message {
+  margin: 16px 24px 0;
+  padding: 12px 16px;
+  background: #fee;
+  border-left: 4px solid #f66;
+  color: #c33;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.add-book-form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--primary-dark, #6b4754);
+}
+
+.form-field input,
+.form-field textarea {
+  padding: 10px 12px;
+  border: 1px solid #f0bbc9;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background: white;
+}
+
+.form-field input:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: #ff6090;
+  box-shadow: 0 0 0 3px rgba(255, 96, 144, 0.1);
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #f0bbc9;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.btn-primary {
+  background: linear-gradient(90deg, var(--accent-1, #ff6090), var(--accent-2, #ffb3d9));
+  color: white;
+  box-shadow: 0 4px 12px rgba(255, 96, 144, 0.2);
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 96, 144, 0.3);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-secondary {
+  background: #f5f5f5;
+  color: #6b4754;
+  border: 1px solid #e0e0e0;
+}
+
+.btn-secondary:hover {
+  background: #ececec;
+}
+
+@media (max-width: 600px) {
+  .add-book-modal {
+    max-height: 100vh;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-header {
+    padding: 16px;
+  }
+
+  .add-book-form {
+    padding: 16px;
+  }
+}

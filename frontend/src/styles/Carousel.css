@@ -1,0 +1,18 @@
+.carousel{ position:relative; width:100%; height:320px; border-radius:12px; overflow:hidden; background:#fff; box-shadow:0 12px 30px rgba(107,71,84,0.05); }
+.carousel-slides{ position:relative; height:100%; }
+.carousel-item{ position:absolute; inset:0; background-size:cover; background-position:center; opacity:0; transition:opacity .5s ease, transform .5s ease; transform:scale(.98); }
+.carousel-item.active{ opacity:1; transform:scale(1); }
+.carousel-caption{ position:absolute; left:18px; bottom:18px; background:linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.18)); color:#fff; padding:12px 14px; border-radius:8px; max-width:64%; }
+.carousel-caption h3{ margin:0 0 6px 0; font-size:1.05rem }
+.carousel-teaser{ font-size:0.9rem; opacity:0.95; margin:0 }
+.carousel-prev, .carousel-next{ position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,0.85); border:none; width:36px; height:52px; border-radius:8px; box-shadow:0 6px 16px rgba(0,0,0,0.06); cursor:pointer; font-size:22px; color:#6b4754 }
+.carousel-prev{ left:8px }
+.carousel-next{ right:8px }
+.carousel-dots{ position:absolute; left:50%; transform:translateX(-50%); bottom:10px; display:flex; gap:8px }
+.carousel-dots .dot{ width:10px; height:10px; border-radius:50%; border:none; background:rgba(255,255,255,0.6); cursor:pointer }
+.carousel-dots .dot.active{ background:#ff1493 }
+
+@media (max-width:720px){
+  .carousel{ height:220px }
+  .carousel-caption{ max-width:85% }
+}

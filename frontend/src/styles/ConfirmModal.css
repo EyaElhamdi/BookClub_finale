@@ -1,0 +1,24 @@
+.cm-overlay{
+  position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.4); z-index:2000;
+}
+.cm-box{
+  background:#ffffff; padding:20px; border-radius:8px; box-shadow:0 10px 30px rgba(0,0,0,0.15); width:320px; max-width:90%;
+  transform: translateY(6px) scale(0.98);
+  animation: cm-pop .18s cubic-bezier(.2,.9,.3,1) forwards;
+}
+.cm-title{ margin:0 0 8px; font-size:1.05rem }
+.cm-message{ margin:0 0 16px; color:#555 }
+.cm-actions{ display:flex; gap:8px; justify-content:flex-end }
+.cm-btn{ padding:8px 12px; border-radius:6px; border:none; cursor:pointer }
+.cm-cancel{ background:#f1f1f1 }
+.cm-confirm{ background:var(--accent-1); color:var(--surface) }
+
+@keyframes cm-pop {
+  0% { opacity: 0; transform: translateY(6px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.cm-overlay { opacity: 0; animation: cm-fade .18s ease forwards; }
+@keyframes cm-fade { 0% { opacity: 0 } 100% { opacity: 1 } }
+
+.cm-btn:focus { outline: 2px solid rgba(180,52,92,0.25); box-shadow: 0 0 0 4px rgba(180,52,92,0.08); }

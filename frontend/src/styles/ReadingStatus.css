@@ -1,0 +1,188 @@
+.reading-status {
+  background: linear-gradient(135deg, rgba(255, 219, 230, 0.1), rgba(255, 179, 201, 0.05));
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #f5e6ed;
+  margin-bottom: 24px;
+}
+
+.reading-status h4 {
+  margin-top: 0;
+  color: #6b4754;
+  font-size: 1.05rem;
+}
+
+.reading-status.login-msg {
+  background: #f5f5f5;
+  text-align: center;
+  color: #8a5c69;
+  padding: 16px;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.status-btn {
+  padding: 10px 16px;
+  border: 2px solid #f0bbc9;
+  background: white;
+  color: #8a5c69;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.status-btn:hover {
+  border-color: #ff6090;
+  background: #fff5f8;
+}
+
+.status-btn.active {
+  background: linear-gradient(90deg, #ff6090, #ffb3d9);
+  color: white;
+  border-color: #ff6090;
+}
+
+.status-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.dates-info {
+  background: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border-left: 4px solid #ff6090;
+}
+
+.dates-info p {
+  margin: 0;
+  color: #6b4754;
+  font-size: 0.95rem;
+}
+
+.edit-dates-btn {
+  background: white;
+  border: 2px solid #f0bbc9;
+  color: #8a5c69;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+  margin-right: 8px;
+  transition: all 0.2s ease;
+}
+
+.edit-dates-btn:hover {
+  border-color: #ff6090;
+  background: #fff5f8;
+}
+
+.date-form {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 12px;
+  border: 1px solid #f5e6ed;
+}
+
+.date-field {
+  margin-bottom: 12px;
+}
+
+.date-field:last-of-type {
+  margin-bottom: 16px;
+}
+
+.date-field label {
+  display: block;
+  margin-bottom: 6px;
+  color: #6b4754;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.date-field input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #f0bbc9;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: #6b4754;
+}
+
+.date-field input:focus {
+  outline: none;
+  border-color: #ff6090;
+  box-shadow: 0 0 0 3px rgba(255, 96, 144, 0.1);
+}
+
+.save-dates-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #ff6090, #ffb3d9);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.save-dates-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 96, 144, 0.2);
+}
+
+.save-dates-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.remove-btn {
+  background: #ffe4e9;
+  color: #c33;
+  border: 1px solid #f0bbc9;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.remove-btn:hover {
+  background: #ffd4de;
+  border-color: #ff6090;
+}
+
+@media (max-width: 600px) {
+  .reading-status {
+    padding: 16px;
+  }
+
+  .status-buttons {
+    gap: 6px;
+  }
+
+  .status-btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .edit-dates-btn,
+  .remove-btn {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 8px;
+  }
+}

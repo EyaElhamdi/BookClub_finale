@@ -1,0 +1,56 @@
+:root{
+  --bg: #fff;
+  --card: #fff;
+  --text: #5f4049;
+  --muted: #7b5563;
+  --accent-1: #ff6f99;
+  --accent-2: #ff2d6f;
+  --accent-ghost: #ffdbe6;
+  --header-bg: linear-gradient(180deg,#fff,#fff4f8);
+  --header-border: rgba(0,0,0,0.04);
+  --link: var(--accent-1);
+}
+
+/* Dark theme overrides */
+.theme-dark{
+  --bg: #0f1112;
+  --card: #141617;
+  --text: #efe6dd; /* warm 'nude' text in dark mode */
+  --muted: #c9b7b0;
+  --accent-1: #ff90b3;
+  --accent-2: #ff6f99;
+  --accent-ghost: rgba(255,111,153,0.08);
+  --header-bg: linear-gradient(180deg,#0f1112,#121314);
+  --header-border: rgba(255,255,255,0.04);
+  --link: #ffdbe6;
+}
+
+/* apply basic background/text globally */
+html, body, #root{
+  height:100%;
+}
+body{
+  background: var(--bg);
+  color: var(--text);
+  transition: background .18s ease, color .18s ease;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+
+/* header helpers */
+.app-header{
+  padding: 12px;
+  border-bottom: 1px solid var(--header-border);
+  background: var(--header-bg);
+}
+
+.theme-toggle{ margin-left:12px; padding:6px 8px; border-radius:10px; border:none; background:transparent; color:var(--text); cursor:pointer }
+.theme-toggle:focus{ outline:3px solid rgba(255,111,153,0.12); outline-offset:3px }
+
+/* allow components to use these vars */
+a{ color:var(--link) }
+
+/* brand */
+.brand{ display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text); }
+.brand-logo{ width:34px; height:34px; display:inline-block }
+.brand-title{ font-weight:700; letter-spacing:1px; color:var(--text); }

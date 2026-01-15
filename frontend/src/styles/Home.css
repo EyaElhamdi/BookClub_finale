@@ -1,0 +1,80 @@
+:root{
+  --accent-1:#ff6f99;
+  --accent-2:#ff2d6f;
+  --muted:#7b5563;
+  --bg:#fff4f8;
+  --card:#fff;
+  --radius:14px;
+}
+
+.home-container{
+  max-width:1100px;
+  margin:28px auto;
+  padding:22px;
+  box-sizing:border-box;
+}
+
+/* HERO */
+.hero{
+  display:flex;
+  gap:28px;
+  align-items:center;
+  background:linear-gradient(180deg,var(--bg),#fff);
+  border-radius:16px;
+  padding:28px;
+  box-shadow:0 10px 30px rgba(86,28,45,0.05);
+}
+.hero-inner{ flex:1 }
+.hero-title{ font-size:2rem; margin:0 0 8px; color:#b4345c }
+.hero-sub{ margin:0 0 16px; color:var(--muted) }
+.cta-row{ display:flex; gap:12px }
+.cta-row .primary{ padding:10px 16px; border-radius:12px; text-decoration:none; color:#fff; background:linear-gradient(90deg,var(--accent-1),var(--accent-2)); font-weight:800 }
+.cta-row .view-btn{ padding:10px 14px; border-radius:12px; text-decoration:none; border:1px solid #ffdbe6; color:var(--accent-1); background:transparent; display:inline-flex; align-items:center }
+
+/* simple illustration placeholder */
+ .hero-illustration{ width:420px; display:flex; justify-content:center }
+.book-stack{ width:160px; height:160px; background:linear-gradient(180deg,#fff,#fff4f8); border-radius:10px; box-shadow:0 8px 26px rgba(86,28,45,0.06); position:relative }
+.book-stack::before{ content:''; position:absolute; left:12px; top:10px; right:12px; bottom:10px; border-radius:8px; background:linear-gradient(180deg,#ffdbe6,#fff); transform:rotate(-6deg) }
+
+/* FEATURES */
+.features{ margin-top:20px }
+.section-title{ margin:0 0 12px; color:#b4345c }
+.feature-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px }
+.feature-card{ background:var(--card); padding:16px; border-radius:12px; box-shadow:0 8px 20px rgba(86,28,45,0.04) }
+.feature-card h3{ margin:0 0 8px; color:#5f4049 }
+.feature-card p{ margin:0; color:var(--muted) }
+
+/* RECENT */
+.recent{ margin-top:20px }
+.recent-grid{ display:flex; gap:12px }
+.recent-card{ display:block; padding:16px 18px; background:var(--card); border-radius:12px; box-shadow:0 8px 20px rgba(86,28,45,0.04); text-decoration:none; color:#5f4049; flex:1; text-align:center }
+
+.top-books .book-list{ display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap:16px; margin-top:12px }
+.top-books .view-btn{ margin-top:8px }
+
+/* Shelves */
+.shelves{ margin-top:26px }
+.shelf{ margin-bottom:22px; background: #fff; padding:12px 14px; border-radius:12px; box-shadow:0 8px 20px rgba(86,28,45,0.03) }
+.shelf-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:8px }
+.shelf-head h3{ margin:0; font-size:1.05rem; color:#3f2a31 }
+.shelf-row{ display:flex; gap:12px; overflow:auto; padding-bottom:6px }
+.cover-card{ width:120px; flex:0 0 auto; background:var(--card); border-radius:8px; box-shadow:0 6px 18px rgba(86,28,45,0.04); padding:8px; text-align:center }
+.cover-card img{ width:100%; height:160px; object-fit:cover; border-radius:6px }
+.cover-meta{ margin-top:8px }
+.cover-title{ font-size:0.85rem; color:#4d3338; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.cover-author{ font-size:0.75rem; color:var(--muted); margin-top:4px }
+
+/* hide scrollbar in webkit but allow scroll */
+.shelf-row::-webkit-scrollbar{ height:8px }
+.shelf-row::-webkit-scrollbar-thumb{ background: rgba(0,0,0,0.08); border-radius:6px }
+
+/* Responsive */
+@media (max-width:900px){
+  .hero{ flex-direction:column; align-items:flex-start }
+  .hero-illustration{ width:100%; display:flex; justify-content:flex-end }
+  .feature-grid{ grid-template-columns:repeat(2,1fr) }
+}
+@media (max-width:520px){
+  .feature-grid{ grid-template-columns:1fr }
+  .recent-grid{ flex-direction:column }
+}

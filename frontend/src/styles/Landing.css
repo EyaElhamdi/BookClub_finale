@@ -1,0 +1,11 @@
+.landing-root{position:relative;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.landing-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.landing-overlay{position:relative;z-index:2;display:flex;align-items:center;justify-content:center;padding:40px;width:100%;height:100%;background:linear-gradient(180deg,rgba(0,0,0,0.35),rgba(0,0,0,0.45))}
+.landing-content{max-width:900px;text-align:center;color:#fff}
+.landing-brand{font-size:clamp(1rem,3.4vw,2rem);font-weight:900;letter-spacing:2px;margin-bottom:14px;color:#fff;text-transform:uppercase;text-shadow:0 4px 18px rgba(0,0,0,0.6)}
+.landing-quote{font-size:clamp(1.5rem,3.2vw,2.4rem);margin:0 0 12px;line-height:1.25;font-weight:700}
+.landing-by{opacity:0.85;margin:0 0 20px}
+.landing-ctas{display:flex;gap:12px;justify-content:center}
+.landing-ctas .primary{background:linear-gradient(90deg,#ff6f99,#ff2d6f);color:#fff;padding:10px 16px;border-radius:10px;font-weight:700;text-decoration:none}
+.landing-ctas .view-btn{background:transparent;border:1px solid rgba(255,255,255,0.2);color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none}
+@media (max-width:520px){.landing-quote{font-size:1.25rem;padding:0 12px}.landing-ctas{flex-direction:column;gap:8px}.landing-brand{font-size:1.1rem}}

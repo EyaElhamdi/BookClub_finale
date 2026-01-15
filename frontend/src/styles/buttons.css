@@ -1,0 +1,63 @@
+/* Global button styles used across components */
+:root{
+  --accent-1: #ff6f99;
+  --accent-2: #ff2d6f;
+  --accent-ghost: #ffdbe6;
+  --muted: #7b5563;
+  --text: #5f4049;
+  --radius: 10px;
+}
+
+.btn, button, .add-btn, .view-btn, .submit-btn, .delete-btn, .primary, .small-btn, .back-btn, .nav-btn, .edit-btn, .logout-btn {
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Primary button */
+.primary, .add-btn, .submit-btn {
+  background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  border: none;
+  font-weight: 800;
+  box-shadow: 0 10px 30px rgba(255,96,144,0.12);
+}
+.primary:hover, .add-btn:hover, .submit-btn:hover { transform: translateY(-3px); }
+
+/* Ghost / outline */
+.view-btn, .back-btn, .nav-btn, .delete-btn {
+  background: transparent;
+  color: var(--accent-1);
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--accent-ghost);
+  font-weight: 700;
+}
+.view-btn:hover, .back-btn:hover, .nav-btn:hover, .delete-btn:hover { background: rgba(255,111,153,0.06); transform: translateY(-2px); }
+
+/* Small / subtle */
+.small-btn, .edit-btn{ padding:6px 8px; border-radius:8px; border:1px solid var(--accent-ghost); background:#fff; color:var(--accent-1); font-weight:700 }
+
+/* Danger / delete */
+.delete-btn{ color:#c0392b; border-color: rgba(192,57,43,0.06) }
+.delete-btn:hover{ background: rgba(192,57,43,0.04) }
+
+/* Read-more as link-style */
+.read-more{ background:transparent; border:none; color:var(--accent-1); font-weight:800; cursor:pointer }
+.read-more:hover{ text-decoration:underline }
+
+/* Disabled */
+button[disabled], .submit-btn[disabled]{ opacity:0.55; cursor:not-allowed; transform:none }
+
+/* Utility: full-width buttons */
+.btn--full{ width:100%; display:inline-flex; justify-content:center }
+
+/* Focus accessibility */
+button:focus, .btn:focus{ outline:3px solid rgba(255,111,153,0.12); outline-offset:3px }
+
+@media (max-width:720px){
+  .primary, .add-btn, .submit-btn{ padding:10px 12px; font-size:0.98rem }
+}

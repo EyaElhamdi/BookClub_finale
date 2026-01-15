@@ -1,0 +1,144 @@
+/* Profile styles rely on global design tokens for consistent look */
+:root{ /* local fallbacks */ --card: #ffffff; }
+/* Container */
+.profile-container {
+  background: linear-gradient(180deg, var(--bg) 0%, #fff 100%);
+  color: var(--muted);
+  min-height: 100vh;
+  font-family: "Poppins", system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+  padding: 24px 20px 60px;
+  box-sizing: border-box;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding-top: 18px;
+  margin-bottom: 8px;
+}
+.header h1 {
+  color: var(--accent-2);
+  font-size: 2.1rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin: 18px 0 28px;
+  flex-wrap: wrap;
+}
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  font-size: 0.95rem;
+  font-weight: 600;
+  transition: background-color 0.18s ease, transform 0.12s ease;
+  cursor: pointer;
+  border: none;
+  color: white;
+  background: var(--accent-1);
+}
+.nav-btn:hover { background: var(--accent-2); transform: translateY(-2px); }
+.nav-btn.active { background: var(--accent-2); }
+
+/* Main layout */
+.main-content {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 34px;
+  align-items: start;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 8px;
+}
+
+.welcome-left {
+  padding: 12px 6px;
+}
+.greeting {
+  font-size: 2rem;
+  color: var(--primary-dark);
+  font-weight: 700;
+  margin: 0 0 6px 0;
+}
+.sub-greeting { color: #6f4b56; margin: 0 0 12px 0; }
+
+/* Favorites section */
+.favorites-section h2 {
+  color: var(--primary-dark);
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+.book-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 14px;
+}
+.book-card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.book-card img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+.book-card h4 { font-size: 0.95rem; margin: 8px 0 2px; color: var(--primary-dark); text-align:center }
+.book-card p { margin: 0; font-size: 0.82rem; color: #6b4754 }
+.actions { display:flex; gap:8px; margin-top:8px }
+.actions a, .actions button { background: transparent; border:none; color:var(--primary); cursor:pointer }
+
+.buttons { margin-top: 16px; display:flex; gap:12px }
+.add-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-weight: 700;
+}
+.see-more-btn { background: white; color: var(--primary); border: 2px solid var(--primary); padding: 10px 18px; border-radius: 12px }
+
+/* Info box */
+.info-box {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 22px;
+  box-shadow: var(--shadow);
+}
+.info-box h2 { text-align:center; color:var(--primary-dark); margin-bottom:12px }
+.info-form { display:flex; flex-direction:column; gap:12px }
+.info-form label { color: var(--primary-dark); font-weight:600 }
+.info-form input { width:100%; padding:10px 12px; border-radius:var(--radius-sm); border:1px solid #f2d6df; background:var(--soft-pink) }
+.info-form input[disabled] { background: #fff; border:1px solid #f3d7de }
+.edit-btn { width:100%; padding:10px; border-radius:var(--radius-sm); background:#ffd6e0; color:var(--primary-dark); border:none; font-weight:600 }
+.edit-btn:hover { background:#ffc3d1 }
+
+.empty-text { color:#8b6a73; font-style:italic }
+
+/* Footer */
+.footer-text { text-align:center; margin-top:28px; color:var(--muted) }
+
+/* Responsive */
+@media (max-width: 900px) {
+  .main-content { grid-template-columns: 1fr; padding: 0 }
+  .info-box { order: 3 }
+}
+
+@media (max-width: 480px) {
+  .header h1 { font-size: 1.6rem }
+  .greeting { font-size: 1.3rem }
+  .book-card img { height: 120px }
+}
+
+/* end of Profile.css */

@@ -1,0 +1,294 @@
+/* Simple styles for the Book Details page */
+.details-page.large { padding: 24px; font-family: Arial, Helvetica, sans-serif; color: #333; }
+.details-grid { display: grid; grid-template-columns: 320px 1fr; gap: 20px; align-items: start; }
+.cover { width: 100%; border-radius: 6px; box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.details-meta h1 { margin: 0 0 8px 0; }
+.meta-top { display:flex; justify-content: space-between; gap:12px; align-items:center }
+.author-bio { color:#666; font-size:0.95rem }
+.meta-row { display:flex; gap:16px; color:#555; margin-top:8px }
+.tags { margin-top:8px }
+.tag { display:inline-block; background:#fff0f6; color:#b4345c; padding:4px 8px; border-radius:12px; margin-right:6px; font-size:0.85rem }
+.description .teaser { font-style:italic; color:#8b4355; background:#fff6f9; padding:8px; border-radius:6px; }
+.read-more { margin-top:6px }
+.characters ul, .chapters ol { margin: 8px 0 0 18px }
+.sample-modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:1000 }
+.sample-box { background:#fff; padding:18px; border-radius:8px; max-width:760px; width:90%; max-height:80vh; overflow:auto }
+.excerpt-text { white-space:pre-wrap; background:#faf7f8; padding:12px; border-radius:6px }
+.edit-modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:2000 }
+.edit-box{ background:#fff; padding:18px; border-radius:8px; max-width:760px; width:92%; }
+.edit-box .field{ margin-bottom:8px }
+.edit-box input, .edit-box textarea{ width:100%; padding:8px 10px; border-radius:8px; border:1px solid #eee }
+
+/* Improved Edit Modal Styles */
+.edit-modal-overlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: transparent !important;
+  z-index: 2100 !important;
+  padding: 20px !important;
+}
+
+.edit-modal-content {
+  background: #fff;
+  border-radius: 12px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+}
+
+.edit-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px;
+  border-bottom: 1px solid #f0e6ed;
+  background: linear-gradient(90deg, #fff0f6, #fff);
+  position: sticky;
+  top: 0;
+}
+
+.edit-modal-header h2 {
+  margin: 0;
+  color: #b4345c;
+  font-size: 1.2rem;
+}
+
+.edit-modal-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: #999;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.edit-modal-close:hover {
+  background: #f5f0f3;
+  color: #b4345c;
+}
+
+.edit-form {
+  padding: 16px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  color: #6b4754;
+  font-weight: 700;
+  margin-bottom: 6px;
+  font-size: 0.9rem;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 10px;
+  border: 1px solid #e6cbd2;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: #333;
+  transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #b4345c;
+  box-shadow: 0 0 0 3px rgba(180, 52, 92, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #ccc;
+}
+
+.edit-form-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding-top: 12px;
+  border-top: 1px solid #f0e6ed;
+  margin-top: 12px;
+}
+
+.btn-save {
+  background: linear-gradient(90deg, #b4345c, #ff6f99);
+  color: #fff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.btn-save:hover {
+  box-shadow: 0 8px 20px rgba(180, 52, 92, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-save:active {
+  transform: translateY(0);
+}
+
+.btn-cancel {
+  background: transparent;
+  color: #7b5563;
+  padding: 12px 24px;
+  border: 1px solid #e6cbd2;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.btn-cancel:hover {
+  background: #f5f0f3;
+  border-color: #b4345c;
+  color: #b4345c;
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .edit-modal-header {
+    padding: 16px;
+  }
+  
+  .edit-form {
+    padding: 16px;
+  }
+}.actions-row { margin-top:16px; display:flex; gap:8px; align-items:center }
+.buy-link { background:#fff; border:1px solid #e6cbd2; color:#b4345c; padding:8px 10px; border-radius:6px; text-decoration:none }
+.back-link { margin-left:10px; color:#666 }
+.share-feedback { margin-left:8px; color:#2b7a2b }
+.small-meta { font-size:0.9rem; color:#666 }
+/* Styles for the Book Details page */
+.details-page{
+  max-width:1100px;
+  margin:34px auto;
+  padding:28px;
+  background:linear-gradient(180deg,#fff,#fffaf8);
+  border-radius:14px;
+  box-shadow: 0 18px 46px rgba(107,71,84,0.06);
+}
+.details-grid{ display:grid; grid-template-columns: 360px 1fr; gap:28px; align-items:start }
+.details-grid img.cover{ width:100%; height:420px; object-fit:cover; border-radius:10px; box-shadow:0 14px 40px rgba(180,52,92,0.08) }
+.details-meta h1{ margin:0 0 8px 0; color:#b4345c; font-size:1.6rem }
+.details-meta .meta-top{ display:flex; justify-content:space-between; gap:18px; align-items:flex-start }
+.author-block{ max-width:66%; }
+.author-name{ font-weight:800; color:#6b4754; margin-bottom:6px }
+.author-bio{ color:#7b5563; font-size:0.95rem }
+.rating-block{ text-align:right }
+.rating-big{ font-size:1.6rem; color:#ff6f99; font-weight:800 }
+.stars{ font-size:1.05rem }
+.meta-row{ display:flex; gap:16px; color:#7b5563; margin-top:10px; flex-wrap:wrap }
+.isbn{ color:#7b5563; margin-top:6px }
+.tags{ display:flex; gap:8px; flex-wrap:wrap; margin-top:10px }
+.tag{ background:#fff0f4; color:#b4345c; padding:6px 10px; border-radius:10px; font-weight:700; font-size:0.85rem }
+.description p{ color:#5f4049; line-height:1.75; margin:0 }
+.read-more{ margin-top:10px; background:transparent; border:none; color:#b4345c; font-weight:800; cursor:pointer }
+
+.reviews{ margin-top:22px }
+.reviews h3{ margin:8px 0 }
+.review-item{ padding:12px; background:#fff; border-radius:10px; box-shadow:0 8px 20px rgba(107,71,84,0.03); margin-bottom:12px }
+.review-head{ color:#6b4754; margin-bottom:6px }
+.small-rating{ color:#ff6f99; font-weight:800 }
+
+.actions-row{ margin-top:18px; display:flex; gap:12px; align-items:center }
+.primary{ background:linear-gradient(90deg,#ff6f99,#ff2d6f); color:#fff; padding:10px 14px; border-radius:10px; border:none; font-weight:800 }
+.buy-link{ color:#b4345c; border:1px solid #ffdbe6; padding:8px 12px; border-radius:8px; text-decoration:none }
+.back-link{ color:#7b5563; margin-left:8px }
+
+.teaser{ color:#8b5a63; font-style:italic; margin-bottom:8px }
+.secondary{ background:transparent; border:1px solid #ffdbe6; color:#b4345c; padding:8px 10px; border-radius:8px; margin-right:8px }
+
+.characters, .chapters{ margin-top:18px }
+.characters h3, .chapters h3{ margin-bottom:8px }
+.characters ul, .chapters ol{ margin:0; padding-left:18px; color:#5f4049 }
+
+.sample-modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.45); z-index:2000 }
+.sample-box{ background:#fff; padding:18px; border-radius:10px; max-width:820px; width:92%; max-height:80vh; overflow:auto }
+.excerpt-text{ white-space:pre-wrap; color:#47303a; line-height:1.6; background:#fff7f9; padding:12px; border-radius:6px }
+
+.related{ margin-top:24px }
+.related-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap:14px; margin-top:10px }
+.related-card{ display:flex; gap:10px; align-items:center; text-decoration:none; background:#fff; padding:8px; border-radius:10px; box-shadow:0 8px 20px rgba(107,71,84,0.03) }
+.related-card img{ width:56px; height:82px; object-fit:cover; border-radius:4px }
+.related-card .rmeta{ color:#6b4754 }
+
+@media (max-width:980px){
+  .details-grid{ grid-template-columns: 1fr; }
+  .details-grid img.cover{ height:320px }
+  .related-grid{ grid-template-columns: repeat(2, 1fr) }
+}
+
+@media (max-width:520px){
+  .details-grid img.cover{ height:260px }
+  .related-grid{ grid-template-columns: 1fr }
+}
+
+/* Modal wrapper for page-level modals */
+.page-modal{ position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,0.5); z-index:3000 }
+.page-modal .modal-content{ width:min(1100px,96%); max-height:90vh; overflow:auto; border-radius:12px }
+.page-modal .details-page{ margin:0; padding:20px; max-width:1100px }
+.page-modal .actions-row{ justify-content:flex-end }
+
+/* Modal-specific header (grid layout with separate cells) */
+.modal-grid{ display:grid; grid-template-columns: 160px 1fr; gap:12px; align-items:start; margin-bottom:12px }
+.modal-grid .modal-cell{ background: #fffafc; padding:12px; border-radius:8px; border:1px solid #ffe6f2 }
+.cover-cell .cover{ width:160px; height:auto; border-radius:6px; object-fit:cover }
+.title-cell .modal-title{ margin:0 0 6px 0 }
+.teaser-cell .teaser{ color:#555; margin-top:6px }
+.characters-cell ul{ padding-left:18px; margin:6px 0 }
+.buy-cell{ display:flex; gap:8px; align-items:center; justify-content:flex-start }
+.modal-buy{ background:#ff1493; color:#fff; padding:8px 10px; border-radius:8px; text-decoration:none }
+.modal-close-btn{ background:#f3f3f5; border:none; padding:8px 10px; border-radius:6px; cursor:pointer }
+
+/* make modal grid stack on small screens */
+@media (max-width:720px){
+  .modal-grid{ grid-template-columns: 1fr }
+  .cover-cell .cover{ width:100%; height:auto }
+}
+
+.modal-close{ position:absolute; right:12px; top:12px; background:transparent; border:none; font-size:26px; color:#7b5563; cursor:pointer; padding:6px; border-radius:8px }
+.modal-close:hover{ background:rgba(0,0,0,0.04) }
+
+/* Animations */
+.page-modal{ opacity:0; transition:opacity 220ms ease; }
+.page-modal.open{ opacity:1 }
+.page-modal.closing{ opacity:0 }
+.page-modal .modal-content{ transform: translateY(8px) scale(0.98); opacity:0; transition: transform 220ms ease, opacity 220ms ease; }
+.page-modal.open .modal-content{ transform: translateY(0) scale(1); opacity:1 }
+.page-modal.closing .modal-content{ transform: translateY(8px) scale(0.98); opacity:0 }
