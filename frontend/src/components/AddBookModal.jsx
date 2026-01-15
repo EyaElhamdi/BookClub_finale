@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import axios from "axios";
 import "../styles/AddBookModal.css";
 
+/* =========================
+   Composant AddBookModal
+   - Permet d'ajouter un livre via un formulaire
+   - Appelle onAdd avec le livre ajouté après succès
+   - Appelle onClose pour fermer la modal
+========================= */
 function AddBookModal({ onClose, onAdd }) {
+  // État local pour le formulaire
   const [book, setBook] = useState({
     title: "",
     author: "",
@@ -18,14 +25,25 @@ function AddBookModal({ onClose, onAdd }) {
     genres: "",
   });
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // état pour l'envoi du formulaire
+  const [error, setError] = useState(null);      // état pour afficher une erreur
 
+  /* =========================
+     Gestion des changements dans le formulaire
+     - Met à jour le state en fonction de l'input
+  ========================== */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setBook({ ...book, [name]: value });
   };
 
+  /* =========================
+     Gestion de la soumission du formulaire
+     - Vérifie si l'utilisateur est connecté
+     - Transforme genres en tableau
+     - Appelle l'API pour ajouter le livre
+     - Gère loading et erreurs
+  ========================== */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
@@ -39,40 +57,53 @@ function AddBookModal({ onClose, onAdd }) {
         return;
       }
 
-      // Convert genres string to array
+      // Convertit genres string en tableau
       const bookData = {
         ...book,
         rating: book.rating ? parseFloat(book.rating) : 0,
         genres: book.genres ? book.genres.split(',').map(g => g.trim()) : [],
       };
 
+      // Envoi de la requête POST
       const response = await axios.post("http://localhost:5000/api/books", bookData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
+      // Si succès, appeler onAdd et fermer la modal
       if (response.data) {
         onAdd(response.data);
         onClose();
       }
     } catch (err) {
       console.error("Erreur lors de l'ajout du livre :", err);
+      // Affiche un message d'erreur provenant du backend ou générique
       setError(err.response?.data?.message || "Erreur lors de l'ajout du livre");
     } finally {
       setLoading(false);
     }
   };
 
+  /* =========================
+     Rendu JSX de la modal
+     - Overlay qui ferme la modal si clic en dehors
+     - Formulaire avec tous les champs du livre
+     - Boutons Ajouter / Annuler
+     - Affichage d'erreurs et état loading
+  ========================== */
   return (
     <div className="add-book-modal-overlay" onClick={onClose}>
+      {/* Stoppe la propagation pour ne pas fermer si clic à l'intérieur */}
       <div className="add-book-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Ajouter un livre</h2>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
+        {/* Affiche les erreurs si présentes */}
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit} className="add-book-form">
+          {/* Ligne 1 : Titre et Auteur */}
           <div className="form-row">
             <div className="form-field">
               <label>Titre *</label>
@@ -98,6 +129,7 @@ function AddBookModal({ onClose, onAdd }) {
             </div>
           </div>
 
+          {/* Ligne 2 : Note, Année, Pages */}
           <div className="form-row">
             <div className="form-field">
               <label>Note</label>
@@ -134,6 +166,7 @@ function AddBookModal({ onClose, onAdd }) {
             </div>
           </div>
 
+          {/* Ligne 3 : Éditeur et ISBN */}
           <div className="form-row">
             <div className="form-field">
               <label>Éditeur</label>
@@ -157,6 +190,7 @@ function AddBookModal({ onClose, onAdd }) {
             </div>
           </div>
 
+          {/* Image */}
           <div className="form-field">
             <label>Image URL</label>
             <input
@@ -168,6 +202,7 @@ function AddBookModal({ onClose, onAdd }) {
             />
           </div>
 
+          {/* Teaser */}
           <div className="form-field">
             <label>Teaser</label>
             <textarea
@@ -179,6 +214,7 @@ function AddBookModal({ onClose, onAdd }) {
             />
           </div>
 
+          {/* Extrait */}
           <div className="form-field">
             <label>Extrait</label>
             <textarea
@@ -190,6 +226,7 @@ function AddBookModal({ onClose, onAdd }) {
             />
           </div>
 
+          {/* Lien d'achat */}
           <div className="form-field">
             <label>Lien d'achat</label>
             <input
@@ -201,6 +238,7 @@ function AddBookModal({ onClose, onAdd }) {
             />
           </div>
 
+          {/* Genres */}
           <div className="form-field">
             <label>Genres (séparés par des virgules)</label>
             <input
@@ -212,6 +250,7 @@ function AddBookModal({ onClose, onAdd }) {
             />
           </div>
 
+          {/* Boutons Ajouter / Annuler */}
           <div className="form-actions">
             <button type="submit" className="btn-primary" disabled={loading}>
               {loading ? "Ajout en cours..." : "Ajouter le livre"}
@@ -227,4 +266,3 @@ function AddBookModal({ onClose, onAdd }) {
 }
 
 export default AddBookModal;
-

@@ -1,25 +1,34 @@
 import axios from "axios";
 
+// Création d'une instance Axios avec l'URL de base pour l'authentification
 const api = axios.create({
-  baseURL: "http://localhost:5000/auth",
+  baseURL: "http://localhost:5000/auth", // URL de ton backend pour auth
   headers: {
-    "Content-Type": "application/json"
+    "Content-Type": "application/json", // envoi des données en JSON
   },
 });
 
-// Attach token from localStorage on each request (keeps code simple for dev)
+/**
+ * Intercepteur de requête
+ * Ajoute automatiquement le token stocké dans localStorage à chaque requête
+ */
 api.interceptors.request.use((config) => {
   const token = typeof localStorage !== "undefined" ? localStorage.getItem("token") : null;
   if (token) {
     config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
+    config.headers.Authorization = `Bearer ${token}`; // Ajout du token dans l'en-tête
   }
   return config;
 });
 
-// Global error handler: on 401/403 remove token and redirect to login
+/**
+ * Intercepteur de réponse
+ * Gestion globale des erreurs 401/403 (non autorisé / accès refusé)
+ * - Supprime le token et le rôle du localStorage
+ * - Redirige vers la page de login pour ré-authentification
+ */
 api.interceptors.response.use(
-  (res) => res,
+  (res) => res, // si succès, retourne la réponse
   (err) => {
     const status = err.response?.status;
     if (status === 401 || status === 403) {
@@ -27,26 +36,16 @@ api.interceptors.response.use(
         localStorage.removeItem("token");
         localStorage.removeItem("role");
       }
-      // force reload to reset app state and send user to login
+      // Redirection forcée vers la page login
       try {
         if (typeof window !== "undefined") window.location.href = "/login";
       } catch (e) {
         console.warn("Redirect to /login failed", e);
       }
     }
+    // Rejette la promesse pour que l'erreur soit gérée par le catch du composant
     return Promise.reject(err);
   }
 );
 
 export default api;
-
-
-
-
-
-
-
-
-
-
-

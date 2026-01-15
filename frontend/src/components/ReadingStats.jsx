@@ -3,37 +3,41 @@ import axios from 'axios';
 import '../styles/ReadingStats.css';
 
 function ReadingStats({ userId }) {
+  // 🔹 État des statistiques
   const [stats, setStats] = useState({
-    toRead: 0,
-    reading: 0,
-    completed: 0,
-    avgRating: 0,
-    reviews: 0,
+    toRead: 0,       // livres à lire
+    reading: 0,      // livres en cours
+    completed: 0,    // livres terminés
+    avgRating: 0,    // note moyenne
+    reviews: 0,      // nombre d'avis
   });
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true); // état de chargement
 
+  // 🔹 Fonction pour récupérer les stats depuis l'API
   const fetchStats = async () => {
     try {
-      // Fetch reading history
+      // Récupère l'historique de lecture
       const historyRes = await axios.get('http://localhost:5000/api/reading-history', {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
 
-      // Fetch reviews
+      // Récupère les avis de l'utilisateur
       const reviewsRes = await axios.get(`http://localhost:5000/api/reviews/user/${userId}`);
 
       const history = historyRes.data || [];
       const reviews = reviewsRes.data || [];
 
-      // Calculer les stats
+      // Calcul des différents états
       const toRead = history.filter(h => h.status === 'à-lire').length;
       const reading = history.filter(h => h.status === 'en-cours').length;
       const completed = history.filter(h => h.status === 'lu').length;
 
+      // Calcul de la note moyenne
       const avgRating = reviews.length > 0
         ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
         : 0;
 
+      // Mise à jour de l'état
       setStats({
         toRead,
         reading,
@@ -48,20 +52,21 @@ function ReadingStats({ userId }) {
     }
   };
 
-  // Fetch initial stats
+  // 🔹 Premier fetch au montage du composant
   useEffect(() => {
     fetchStats();
   }, [userId]);
 
-  // Refetch stats when page becomes visible (user returns from BookDetails)
+  // 🔹 Rafraîchissement périodique et quand l'utilisateur revient sur la page
   useEffect(() => {
+    // Re-fetch si l'onglet devient visible
     const handleVisibilityChange = () => {
       if (!document.hidden) {
         fetchStats();
       }
     };
 
-    // Refetch every 3 seconds to stay in sync
+    // Re-fetch toutes les 3 secondes pour rester à jour
     const interval = setInterval(() => {
       fetchStats();
     }, 3000);
@@ -74,12 +79,16 @@ function ReadingStats({ userId }) {
     };
   }, [userId]);
 
+  // 🔹 Affichage en chargement
   if (loading) return <div className="reading-stats">Chargement...</div>;
 
   return (
     <div className="reading-stats">
       <h3>📊 Mes statistiques de lecture</h3>
+
+      {/* 🔹 Grille de statistiques */}
       <div className="stats-grid">
+        {/* À lire */}
         <div className="stat-card">
           <div className="stat-icon">📌</div>
           <div className="stat-content">
@@ -88,6 +97,7 @@ function ReadingStats({ userId }) {
           </div>
         </div>
 
+        {/* En cours */}
         <div className="stat-card">
           <div className="stat-icon">📖</div>
           <div className="stat-content">
@@ -96,6 +106,7 @@ function ReadingStats({ userId }) {
           </div>
         </div>
 
+        {/* Terminés */}
         <div className="stat-card">
           <div className="stat-icon">✅</div>
           <div className="stat-content">
@@ -104,6 +115,7 @@ function ReadingStats({ userId }) {
           </div>
         </div>
 
+        {/* Note moyenne */}
         <div className="stat-card">
           <div className="stat-icon">⭐</div>
           <div className="stat-content">
@@ -112,6 +124,7 @@ function ReadingStats({ userId }) {
           </div>
         </div>
 
+        {/* Nombre d'avis */}
         <div className="stat-card">
           <div className="stat-icon">💬</div>
           <div className="stat-content">
@@ -121,6 +134,7 @@ function ReadingStats({ userId }) {
         </div>
       </div>
 
+      {/* 🔹 Barre de progression */}
       <div className="progress-bar">
         <h4>Progression totale</h4>
         <div className="progress-container">
@@ -134,6 +148,8 @@ function ReadingStats({ userId }) {
             <div className="progress-segment completed" title={`Terminés: ${stats.completed}`}></div>
           )}
         </div>
+
+        {/* 🔹 Légende */}
         <div className="legend">
           <span><span className="legend-color to-read-color"></span> À lire</span>
           <span><span className="legend-color reading-color"></span> En cours</span>

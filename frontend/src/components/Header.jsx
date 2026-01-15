@@ -1,60 +1,64 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import "../styles/buttons.css";
-import Logo from "../assets/logo.png";
-import { useTheme } from "../contexts/ThemeContext";
-import { useAuth } from "../contexts/AuthContext";
+import "../styles/buttons.css"; // Styles des boutons
+import Logo from "../assets/logo.png"; // Logo local
+import { useTheme } from "../contexts/ThemeContext"; // Context pour thème clair/sombre
+import { useAuth } from "../contexts/AuthContext"; // Context pour auth utilisateur
 
+// 🔹 Bouton pour changer le thème
 function ThemeToggle() {
   const { theme, toggleTheme } = useTheme();
   return (
-    <button className="theme-toggle" aria-label="Basculer le thème" onClick={toggleTheme}>
-      {theme === "dark" ? "☀︎" : "☾"}
+    <button
+      className="theme-toggle"
+      aria-label="Basculer le thème"
+      onClick={toggleTheme} // Appelle la fonction du contexte
+    >
+      {theme === "dark" ? "☀︎" : "☾"} {/* Soleil si dark, lune si light */}
     </button>
   );
 }
 
-// Resolve local images robustly (support import shapes, relative paths and Windows absolute paths)
+// 🔹 Fonction pour résoudre les images locales ou fallback
 const resolveLocalImage = (img) => {
   try {
-    if (!img) return '/book-placeholder.svg';
+    if (!img) return '/book-placeholder.svg'; // fallback si rien
     if (typeof img === 'string') {
-      // If it's an absolute URL or public path, return as-is
-      if (img.startsWith('/') || img.startsWith('http')) return img;
-      // If it's a Windows absolute path or contains backslashes, extract filename and try to require it from this folder
+      if (img.startsWith('/') || img.startsWith('http')) return img; // URL absolue ou public path
       if (/^[A-Za-z]:\\\\|^[A-Za-z]:\\/.test(img) || img.includes('\\')) {
+        // Windows path -> extraire le nom du fichier
         const fileName = img.split(/[/\\\\]/).pop();
         try { return require(`./${fileName}`); } catch (e) { return img; }
       }
-      // Otherwise assume it's a relative path (./...) - try to require it
       if (img.startsWith('./') || img.startsWith('../')) {
         try { return require(`${img}`); } catch (e) { return img; }
       }
       return img;
     }
-    if (typeof img === 'object' && img.default) return img.default;
+    if (typeof img === 'object' && img.default) return img.default; // import ES Module
     return img;
   } catch (e) {
     return '/book-placeholder.svg';
   }
 };
 
+// 🔹 Résolution finale du logo
 const logoSrc = resolveLocalImage(Logo);
 console.debug("Header logo resolved ->", logoSrc);
 
 export default function Header() {
-  const location = useLocation();
+  const location = useLocation(); // Pour savoir sur quelle page on est
 
-  // ❌ Pages où le header ne doit PAS apparaître
+  // 🔹 Pages où le header ne doit pas apparaître
   const hiddenRoutes = ["/", "/login", "/register"];
-
   if (hiddenRoutes.includes(location.pathname)) {
-    return null; // ⬅️ cache complètement le header
+    return null; // On ne rend pas le header
   }
 
-  const navigate = useNavigate();
-  const { token, logout } = useAuth();
+  const navigate = useNavigate(); // Pour naviguer programmatique
+  const { token, logout } = useAuth(); // Infos utilisateur
 
+  // 🔹 Classe active pour le bouton de navigation
   const active = (path) => (location.pathname === path ? "nav-btn active" : "nav-btn");
 
   return (
@@ -69,6 +73,7 @@ export default function Header() {
           alignItems: "center",
         }}
       >
+        {/* 🔹 Logo + navigation principale */}
         <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
           <Link to="/" className="brand" aria-label="BOOK CLUB">
             <img
@@ -76,11 +81,12 @@ export default function Header() {
               alt="BOOK CLUB"
               className="brand-logo"
               style={{ width: 34, height: 34, objectFit: 'contain' }}
-              onError={(e)=>{ e.currentTarget.src = '/book-placeholder.svg'; }}
+              onError={(e)=>{ e.currentTarget.src = '/book-placeholder.svg'; }} // fallback image
             />
             <span className="brand-title">BOOK CLUB</span>
           </Link>
 
+          {/* 🔹 Liens visibles seulement si connecté */}
           {token ? (
             <>
               <Link to="/home" className={active("/home")}>Accueil</Link>
@@ -91,22 +97,24 @@ export default function Header() {
           ) : null}
         </div>
 
+        {/* 🔹 Boutons à droite : thème + login/logout */}
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-          {/* theme */}
-          <ThemeToggle />
+          <ThemeToggle /> {/* Changement de thème */}
 
           {!token ? (
+            // 🔹 Si pas connecté : login / register
             <>
               <Link to="/login" className="nav-btn">Se connecter</Link>
               <Link to="/register" className="nav-btn">S'inscrire</Link>
             </>
           ) : (
+            // 🔹 Si connecté : bouton logout
             <>
               <button
                 className="nav-btn"
                 onClick={() => {
-                  logout();
-                  navigate('/login');
+                  logout(); // Déconnexion via context
+                  navigate('/login'); // Redirection
                 }}
               >
                 Se déconnecter
@@ -118,4 +126,3 @@ export default function Header() {
     </header>
   );
 }
-

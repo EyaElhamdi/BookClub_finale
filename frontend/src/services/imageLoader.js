@@ -1,11 +1,12 @@
 /**
  * Image Loading Service
- * Handles robust image loading with webpack
+ * Gère le chargement d'images avec fallback et compatibilité Webpack
  */
 
 import React from 'react';
 
-// SVG placeholder - fallback for missing images
+/* ---------- SVG Placeholder ---------- */
+// Image de remplacement si l'image demandée est absente
 export const SVG_PLACEHOLDER = 'data:image/svg+xml;utf8,' +
   encodeURIComponent(
     `<svg xmlns="http://www.w3.org/2000/svg" width="320" height="480" viewBox="0 0 320 480">
@@ -21,7 +22,8 @@ export const SVG_PLACEHOLDER = 'data:image/svg+xml;utf8,' +
     </svg>`
   );
 
-// Pre-require all images at module load time
+/* ---------- Préchargement des images ---------- */
+// Webpack résout les chemins au moment de la compilation
 const PRELOADED_IMAGES = {
   "images.jpg": require("../assets/images.jpg"),
   "9782070360024_1_75_2.jpg": require("../assets/9782070360024_1_75_2.jpg"),
@@ -35,39 +37,45 @@ const PRELOADED_IMAGES = {
   "ara5.jpg": require("../assets/ara5.jpg"),
 };
 
+/* ---------- Fonction getImageUrl ---------- */
 /**
- * Get image URL by filename
- * Returns webpack URL or SVG placeholder
+ * Retourne l'URL d'une image
+ * Si l'image est introuvable, renvoie le SVG placeholder
  */
 export const getImageUrl = (filename) => {
-  if (!filename) return SVG_PLACEHOLDER;
-  
-  // Check if it's a string filename
+  if (!filename) return SVG_PLACEHOLDER; // pas de filename fourni
+
+  // Si filename est une chaîne
   if (typeof filename === 'string') {
     const trimmed = filename.trim();
-    
-    // If it's already a full URL or path, return it
+
+    // Si c'est déjà une URL complète ou un chemin absolu
     if (trimmed.startsWith('http') || trimmed.startsWith('/') || trimmed.startsWith('data:')) {
       return trimmed;
     }
-    
-    // Try to get from preloaded images
+
+    // Sinon, chercher dans les images préchargées
     const preloaded = PRELOADED_IMAGES[trimmed];
     if (preloaded) {
-      return preloaded.default || preloaded;
+      return preloaded.default || preloaded; // certains Webpack exportent par défaut
     }
   }
-  
-  // If it's a webpack object with default export
+
+  // Si filename est un objet Webpack avec propriété default
   if (typeof filename === 'object' && filename?.default) {
     return filename.default;
   }
-  
+
+  // fallback final
   return SVG_PLACEHOLDER;
 };
 
+/* ---------- Hook useImageLoader ---------- */
 /**
- * Hook for image loading with fallback
+ * Hook React pour gérer le chargement d'image avec fallback
+ * - src : URL actuelle de l'image
+ * - setSrc : fonction pour mettre à jour l'image
+ * - handleImageError : met à jour l'image avec placeholder si erreur de chargement
  */
 export const useImageLoader = (initialImage) => {
   const [src, setSrc] = React.useState(() => getImageUrl(initialImage));
@@ -81,4 +89,5 @@ export const useImageLoader = (initialImage) => {
   return { src, setSrc, handleImageError };
 };
 
+// Export principal
 export default { getImageUrl, useImageLoader, SVG_PLACEHOLDER };

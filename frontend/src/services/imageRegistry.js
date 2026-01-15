@@ -1,13 +1,16 @@
 /**
  * Image Registry Configuration
- * Centralized management of all book cover images
- * Ensures reliable loading even if require() fails
+ * Gestion centralisée des couvertures de livres
+ * Assure un chargement fiable même si require() échoue
  */
 
-// Map of image filenames to their webpack-resolved paths
-// If require() fails, these provide a fallback mechanism
+/* ---------- IMAGE_REGISTRY ---------- */
+// Map des noms de fichiers vers leurs chemins Webpack et info
+// Chaque entrée contient :
+// - name : titre du livre
+// - try : fonction qui tente de charger l'image avec require()
 export const IMAGE_REGISTRY = {
-  // French Books
+  // Livres français
   "images.jpg": {
     name: "Le Petit Prince",
     try: () => require("../assets/images.jpg"),
@@ -25,13 +28,13 @@ export const IMAGE_REGISTRY = {
     try: () => require("../assets/images1.jpg"),
   },
 
-  // English Books
+  // Livres anglais
   "602662c_KnplFM1ut3a-e_tLsHzIB6cL.avif": {
     name: "1984",
     try: () => require("../assets/602662c_KnplFM1ut3a-e_tLsHzIB6cL.avif"),
   },
 
-  // Arabic Books
+  // Livres arabes
   "ara1.jfif": {
     name: "ألف ليلة وليلة",
     try: () => require("../assets/ara1.jfif"),
@@ -54,11 +57,14 @@ export const IMAGE_REGISTRY = {
   },
 };
 
+/* ---------- safeLoadImage ---------- */
 /**
- * Safely load image from registry with guaranteed fallback
+ * Charge une image depuis le registre en toute sécurité
+ * - filename : nom du fichier à charger
+ * - Retourne l'URL Webpack si réussite, sinon null
  */
 export const safeLoadImage = (filename) => {
-  if (!filename) return null;
+  if (!filename) return null; // pas de nom fourni
 
   const entry = IMAGE_REGISTRY[filename];
   if (!entry) {
@@ -67,8 +73,8 @@ export const safeLoadImage = (filename) => {
   }
 
   try {
-    const result = entry.try();
-    // Webpack can return { default: url } or just the url
+    const result = entry.try(); // tenter le require()
+    // Webpack peut retourner { default: url } ou juste l'url
     return result?.default || result;
   } catch (e) {
     console.error(`[ImageRegistry] Failed to load ${filename} (${entry.name}):`, e.message);
@@ -76,9 +82,11 @@ export const safeLoadImage = (filename) => {
   }
 };
 
+/* ---------- preloadAllImages ---------- */
 /**
- * Preload all images at startup
- * Catches any loading issues early
+ * Précharge toutes les images du registre au démarrage
+ * Permet de détecter les erreurs tôt
+ * Retourne un objet { loaded, failed }
  */
 export const preloadAllImages = () => {
   console.log("[ImageRegistry] Preloading all book images...");
@@ -87,7 +95,7 @@ export const preloadAllImages = () => {
 
   Object.entries(IMAGE_REGISTRY).forEach(([, entry]) => {
     try {
-      const img = entry.try();
+      const img = entry.try(); // tentative de chargement
       if (img) {
         loaded++;
         console.log(`  ✓ ${entry.name}`);
@@ -105,4 +113,5 @@ export const preloadAllImages = () => {
   return { loaded, failed };
 };
 
+/* ---------- Export ---------- */
 export default { IMAGE_REGISTRY, safeLoadImage, preloadAllImages };

@@ -4,17 +4,17 @@ import { useAuth } from '../contexts/AuthContext';
 import '../styles/ReadingStatus.css';
 
 function ReadingStatus({ bookId }) {
-  const { token } = useAuth();
-  const [status, setStatus] = useState(null);
-  const [entry, setEntry] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const { token } = useAuth(); // 🔹 Token pour les requêtes authentifiées
+  const [status, setStatus] = useState(null); // 🔹 Statut actuel du livre
+  const [entry, setEntry] = useState(null);   // 🔹 L'entrée complète dans l'historique
+  const [loading, setLoading] = useState(false); // 🔹 Indique si une requête est en cours
+  const [showForm, setShowForm] = useState(false); // 🔹 Affiche le formulaire de dates
+  const [startDate, setStartDate] = useState('');  // 🔹 Date de début
+  const [endDate, setEndDate] = useState('');      // 🔹 Date de fin
 
-  // Fetch le statut du livre
+  // 🔹 Récupérer le statut du livre depuis l'API au montage
   useEffect(() => {
-    if (!token) return;
+    if (!token) return; // 🔹 Pas de fetch si l'utilisateur n'est pas connecté
 
     const fetchStatus = async () => {
       try {
@@ -22,39 +22,43 @@ function ReadingStatus({ bookId }) {
           `http://localhost:5000/api/reading-history/book/${bookId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
+
         if (res.data) {
-          setEntry(res.data);
-          setStatus(res.data.status);
-          setStartDate(res.data.startDate ? res.data.startDate.split('T')[0] : '');
+          setEntry(res.data);                  // stocke l'entrée complète
+          setStatus(res.data.status);          // statut actuel
+          setStartDate(res.data.startDate ? res.data.startDate.split('T')[0] : ''); // format yyyy-mm-dd
           setEndDate(res.data.endDate ? res.data.endDate.split('T')[0] : '');
         }
       } catch (err) {
         console.error('Erreur fetch status:', err);
       }
     };
+
     fetchStatus();
   }, [bookId, token]);
 
-  // Mettre à jour le statut
+  // 🔹 Mettre à jour le statut du livre (à-lire, en-cours, lu)
   const handleStatusChange = async (newStatus) => {
     if (!token) return;
 
-    setLoading(true);
+    setLoading(true); // indique que la requête est en cours
     try {
       const res = await axios.post(
         'http://localhost:5000/api/reading-history',
         {
           bookId,
           status: newStatus,
+          // Dates selon le statut
           startDate: newStatus === 'en-cours' && startDate ? startDate : entry?.startDate,
           endDate: newStatus === 'lu' && endDate ? endDate : entry?.endDate,
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      // Mise à jour locale après succès
       setEntry(res.data);
       setStatus(res.data.status);
-      setShowForm(false);
+      setShowForm(false); // ferme le formulaire
     } catch (err) {
       console.error('Erreur mise à jour statut:', err);
     } finally {
@@ -62,7 +66,7 @@ function ReadingStatus({ bookId }) {
     }
   };
 
-  // Supprimer du suivi
+  // 🔹 Supprimer le livre de l'historique
   const handleRemove = async () => {
     if (!entry || !window.confirm('Supprimer ce livre de votre historique ?')) return;
 
@@ -72,6 +76,7 @@ function ReadingStatus({ bookId }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
+      // Réinitialise l'état local
       setEntry(null);
       setStatus(null);
       setStartDate('');
@@ -81,10 +86,12 @@ function ReadingStatus({ bookId }) {
     }
   };
 
+  // 🔹 Message si non connecté
   if (!token) {
     return <div className="reading-status login-msg">Connectez-vous pour tracker votre lecture 📚</div>;
   }
 
+  // 🔹 Labels pour l'affichage des statuts
   const statusLabels = {
     'à-lire': '📌 À lire',
     'en-cours': '📖 En cours',
@@ -95,6 +102,7 @@ function ReadingStatus({ bookId }) {
     <div className="reading-status">
       <h4>Statut de lecture</h4>
 
+      {/* 🔹 Boutons de statut */}
       <div className="status-buttons">
         {['à-lire', 'en-cours', 'lu'].map((s) => (
           <button
@@ -108,8 +116,10 @@ function ReadingStatus({ bookId }) {
         ))}
       </div>
 
+      {/* 🔹 Informations et options selon le statut */}
       {status && (
         <>
+          {/* Dates */}
           <div className="dates-info">
             {status === 'en-cours' && entry?.startDate && (
               <p>🚀 Commencé: {new Date(entry.startDate).toLocaleDateString('fr-FR')}</p>
@@ -119,6 +129,7 @@ function ReadingStatus({ bookId }) {
             )}
           </div>
 
+          {/* Bouton pour afficher/fermer le formulaire de dates */}
           <button
             className="edit-dates-btn"
             onClick={() => setShowForm(!showForm)}
@@ -126,6 +137,7 @@ function ReadingStatus({ bookId }) {
             {showForm ? 'Fermer' : '📅 Ajouter les dates'}
           </button>
 
+          {/* Formulaire pour modifier les dates */}
           {showForm && (
             <div className="date-form">
               {status === 'en-cours' && (
@@ -170,6 +182,7 @@ function ReadingStatus({ bookId }) {
             </div>
           )}
 
+          {/* Bouton pour retirer le livre du suivi */}
           <button className="remove-btn" onClick={handleRemove}>
             Retirer du suivi
           </button>

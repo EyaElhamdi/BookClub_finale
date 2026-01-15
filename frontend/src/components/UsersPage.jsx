@@ -6,12 +6,14 @@ import ConfirmModal from "./ConfirmModal";
 import api from "../services/api";
 
 /* ---------- Navbar ---------- */
+// Composant simple affichant un bouton de déconnexion
 function Navbar() {
   const navigate = useNavigate();
   const { logout } = useAuth();
+
   const handleLogout = () => {
-    if (typeof logout === "function") logout();
-    navigate("/login");
+    if (typeof logout === "function") logout(); // Appelle la fonction de logout du contexte
+    navigate("/login"); // Redirige vers la page de connexion
   };
 
   return (
@@ -26,16 +28,16 @@ function Navbar() {
 }
 
 /* ---------- AddUserForm ---------- */
+// Formulaire pour ajouter un nouvel utilisateur
 function AddUserForm({ onAdd }) {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("user");
-  const [loading, setLoading] = useState(false);
-  // token not required here; UsersPage handles auth checks
+  const [firstName, setFirstName] = useState(""); // Prénom
+  const [lastName, setLastName] = useState("");   // Nom
+  const [email, setEmail] = useState("");         // Email
+  const [role, setRole] = useState("user");       // Rôle (user / creator / admin)
+  const [loading, setLoading] = useState(false);  // Indique si le formulaire est en cours de soumission
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Empêche le rechargement de la page
     if (!firstName || !lastName || !email) {
       alert("Nom, prénom et email sont obligatoires !");
       return;
@@ -44,11 +46,13 @@ function AddUserForm({ onAdd }) {
     setLoading(true);
 
     try {
+      // Appel à l'API pour créer un utilisateur
       const res = await api.post("/users", { firstName, lastName, email, password: "123456", role });
       const data = res.data;
       console.log("ADD USER RAW RESPONSE:", data);
-      onAdd(data.user);
+      onAdd(data.user); // Met à jour la liste des utilisateurs dans UsersPage
 
+      // Réinitialisation du formulaire
       setFirstName("");
       setLastName("");
       setEmail("");
@@ -62,40 +66,21 @@ function AddUserForm({ onAdd }) {
 
   return (
     <form className="add-user-form" onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Prénom"
-        value={firstName}
-        onChange={(e) => setFirstName(e.target.value)}
-        disabled={loading}
-      />
-      <input
-        type="text"
-        placeholder="Nom"
-        value={lastName}
-        onChange={(e) => setLastName(e.target.value)}
-        disabled={loading}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        disabled={loading}
-      />
+      <input type="text" placeholder="Prénom" value={firstName} onChange={(e) => setFirstName(e.target.value)} disabled={loading} />
+      <input type="text" placeholder="Nom" value={lastName} onChange={(e) => setLastName(e.target.value)} disabled={loading} />
+      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} disabled={loading} />
       <select value={role} onChange={(e) => setRole(e.target.value)} disabled={loading}>
         <option value="user">User</option>
         <option value="creator">Creator</option>
         <option value="admin">Admin</option>
       </select>
-      <button type="submit" disabled={loading}>
-        {loading ? "Ajout en cours..." : "Ajouter"}
-      </button>
+      <button type="submit" disabled={loading}>{loading ? "Ajout en cours..." : "Ajouter"}</button>
     </form>
   );
 }
 
 /* ---------- SearchBar ---------- */
+// Barre de recherche filtrant les utilisateurs
 function SearchBar({ search, onSearch }) {
   return (
     <div className="search-bar">
@@ -110,35 +95,27 @@ function SearchBar({ search, onSearch }) {
 }
 
 /* ---------- UserTable ---------- */
+// Tableau affichant tous les utilisateurs avec options d'édition et suppression
 function UserTable({ users, onDelete, onUpdate }) {
-  const [pending, setPending] = React.useState(null);
-  const [editing, setEditing] = React.useState(null);
+  const [pending, setPending] = React.useState(null); // Stocke l'ID d'un utilisateur en attente de suppression
+  const [editing, setEditing] = React.useState(null); // Stocke l'utilisateur en cours d'édition
 
+  // Change le rôle d'un utilisateur
   const handleRoleChange = async (id, newRole) => {
     try {
       await api.put(`/users/${id}`, { role: newRole });
-      onUpdate(id, { role: newRole });
+      onUpdate(id, { role: newRole }); // Met à jour l'utilisateur localement
     } catch (err) {
       alert("Erreur mise à jour rôle : " + (err.response?.data?.message || err.message));
     }
   };
 
-  const confirmDelete = (id) => {
-    setPending(id);
-  };
-
-  const doDelete = () => {
-    if (pending) {
-      onDelete(pending);
-      setPending(null);
-    }
-  };
-
-  const cancelDelete = () => setPending(null);
-  const openEdit = (user) => setEditing(user);
-  const closeEdit = () => setEditing(null);
-
-  const saveEdit = async (id, patch) => {
+  const confirmDelete = (id) => setPending(id); // Déclenche l'ouverture du modal de confirmation
+  const doDelete = () => { if (pending) { onDelete(pending); setPending(null); } }; // Supprime effectivement
+  const cancelDelete = () => setPending(null); // Annule la suppression
+  const openEdit = (user) => setEditing(user); // Ouvre la modal d'édition
+  const closeEdit = () => setEditing(null); // Ferme la modal
+  const saveEdit = async (id, patch) => { // Enregistre les modifications
     try {
       await api.put(`/users/${id}`, patch);
       onUpdate(id, patch);
@@ -147,6 +124,7 @@ function UserTable({ users, onDelete, onUpdate }) {
       alert('Erreur mise à jour: ' + (err.response?.data?.message || err.message));
     }
   };
+
   return (
     <div className="user-table">
       <table>
@@ -162,9 +140,7 @@ function UserTable({ users, onDelete, onUpdate }) {
         <tbody>
           {users.length === 0 ? (
             <tr>
-              <td colSpan="5" className="empty">
-                Aucun utilisateur
-              </td>
+              <td colSpan="5" className="empty">Aucun utilisateur</td>
             </tr>
           ) : (
             users.map((user) => (
@@ -188,7 +164,8 @@ function UserTable({ users, onDelete, onUpdate }) {
           )}
         </tbody>
       </table>
-      {/* confirmation modal */}
+
+      {/* Modal confirmation suppression */}
       {pending && (
         <ConfirmModal
           isOpen={!!pending}
@@ -199,7 +176,7 @@ function UserTable({ users, onDelete, onUpdate }) {
         />
       )}
 
-      {/* Edit modal */}
+      {/* Modal édition */}
       {editing && (
         <div className="edit-modal" role="dialog" aria-modal="true">
           <div className="edit-box">
@@ -212,8 +189,16 @@ function UserTable({ users, onDelete, onUpdate }) {
   );
 }
 
+/* ---------- EditUserForm ---------- */
+// Formulaire pour modifier un utilisateur existant
 function EditUserForm({ user, onCancel, onSave }) {
-  const [form, setForm] = React.useState({ firstName: user.firstName || '', lastName: user.lastName || '', email: user.email || '', role: user.role || 'user', password: '' });
+  const [form, setForm] = React.useState({ 
+    firstName: user.firstName || '', 
+    lastName: user.lastName || '', 
+    email: user.email || '', 
+    role: user.role || 'user', 
+    password: '' 
+  });
   const [loading, setLoading] = React.useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -247,26 +232,26 @@ function EditUserForm({ user, onCancel, onSave }) {
 }
 
 /* ---------- UsersPage ---------- */
+// Page principale affichant tous les composants précédents
 export default function UsersPage() {
   const navigate = useNavigate();
-  const { token, role: ctxRole } = useAuth();
+  const { token, role: ctxRole } = useAuth(); // Récupère token et rôle de l'utilisateur
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
 
+  // Redirige vers login si l'utilisateur n'est pas admin
   useEffect(() => {
-    const role = ctxRole;
-    if (!role || role.toLowerCase() !== "admin") {
+    if (!ctxRole || ctxRole.toLowerCase() !== "admin") {
       navigate("/login");
     }
   }, [navigate, ctxRole]);
 
+  // Fetch initial des utilisateurs
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await api.get("/users");
-        const data = res.data;
-        console.log("RAW RESPONSE FROM BACKEND:", data);
-        setUsers(data);
+        setUsers(res.data);
       } catch (err) {
         alert("Erreur chargement : " + (err.response?.data?.message || err.message));
       }
@@ -274,22 +259,21 @@ export default function UsersPage() {
     if (token) fetchUsers();
   }, [token]);
 
+  // Gestion des utilisateurs ajoutés, supprimés ou modifiés
   const handleAddUser = (user) => setUsers((prev) => [...prev, user]);
-
   const handleDeleteUser = async (id) => {
     try {
-      // handled by modal in table row
       await api.delete(`/users/${id}`);
       setUsers((prev) => prev.filter((u) => u._id !== id));
     } catch (err) {
       alert("Erreur suppression: " + (err.response?.data?.message || err.message));
     }
   };
-
   const handleUpdateUser = (id, patch) => {
     setUsers((prev) => prev.map((u) => (u._id === id ? { ...u, ...patch } : u)));
   };
 
+  // Filtrage des utilisateurs selon la recherche
   const filteredUsers = users.filter((u) =>
     (u.firstName + " " + u.lastName).toLowerCase().includes(search.toLowerCase())
   );
@@ -308,15 +292,3 @@ export default function UsersPage() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

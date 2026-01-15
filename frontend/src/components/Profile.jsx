@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
-import FavoriteBooks from "./FavoriteBooks";
-import ReadingStats from "./ReadingStats";
+import FavoriteBooks from "./FavoriteBooks"; // composant affichant les livres favoris
+import ReadingStats from "./ReadingStats";   // composant affichant les stats de lecture
 import "../styles/Profile.css";
 
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Profile({ favorites: sharedFavorites = [], setFavorites: setSharedFavorites }) {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  // allow guest view when no token (prevents automatic redirect on click)
-  const { token, logout } = useAuth();
+  const [user, setUser] = useState(null);       // stocke les infos de l'utilisateur
+  const [loading, setLoading] = useState(true); // indique si on charge le profil
+  const { token, logout } = useAuth();          // contexte auth global
 
+  // 🔹 Récupération du profil depuis l'API
   useEffect(() => {
-    // If no token, stop fetching and show guest view
+    // Si pas de token, on ne fetch pas et on passe en vue invité
     if (!token) {
       setLoading(false);
       setUser(null);
@@ -24,23 +24,24 @@ export default function Profile({ favorites: sharedFavorites = [], setFavorites:
 
     const fetchProfile = async () => {
       try {
-        const res = await api.get("/profile");
-        setUser(res.data || {}); // si API renvoie null
+        const res = await api.get("/profile"); // appel API pour récupérer le profil
+        setUser(res.data || {});               // si API renvoie null, fallback {}
       } catch (err) {
-        // si token invalide, basculer en vue invité
+        // Si token invalide, logout et bascule en vue invité
         if (typeof logout === "function") logout();
         setUser(null);
       } finally {
-        setLoading(false);
+        setLoading(false);                     // fin du chargement
       }
     };
 
     fetchProfile();
   }, [navigate, token, logout]);
 
+  // 🔹 Affichage pendant le chargement
   if (loading) return <p className="profile-loading">Chargement du profil...</p>;
 
-  // Guest view when not authenticated
+  // 🔹 Vue invité si l'utilisateur n'est pas connecté
   if (!token) {
     return (
       <div className="profile-container">
@@ -63,6 +64,7 @@ export default function Profile({ favorites: sharedFavorites = [], setFavorites:
     );
   }
 
+  // 🔹 Vue principale pour utilisateur connecté
   return (
     <div className="profile-container">
       {/* ===== HEADER ===== */}
@@ -94,10 +96,10 @@ export default function Profile({ favorites: sharedFavorites = [], setFavorites:
           <h2 className="greeting">Bonjour {user.firstName || "Utilisateur"} 👋</h2>
           <p className="sub-greeting">Heureuse de vous revoir sur Book Club</p>
 
-          {/* Reading Stats */}
+          {/* 🔹 Statistiques de lecture */}
           <ReadingStats userId={user._id} />
 
-          {/* Favorites placed directly under greeting */}
+          {/* 🔹 Favoris */}
           <FavoriteBooks
             favorites={
               (Array.isArray(sharedFavorites) && sharedFavorites.length > 0)
@@ -105,15 +107,16 @@ export default function Profile({ favorites: sharedFavorites = [], setFavorites:
                 : user?.favorites || []
             }
             setFavorites={(newFavs) => {
+              // Met à jour les favoris dans le contexte partagé et dans l'état utilisateur
               if (setSharedFavorites) setSharedFavorites(newFavs);
               if (user) setUser({ ...user, favorites: newFavs });
             }}
             onBookAdded={(book) => {
-              // Ajouter le nouveau livre aux favoris et recharger
+              // Ajout d'un nouveau livre aux favoris
               const newFavs = [...(sharedFavorites || user?.favorites || []), book];
               if (setSharedFavorites) setSharedFavorites(newFavs);
               if (user) setUser({ ...user, favorites: newFavs });
-              window.location.reload();
+              window.location.reload(); // recharge la page pour synchroniser
             }}
           />
         </section>
@@ -122,6 +125,7 @@ export default function Profile({ favorites: sharedFavorites = [], setFavorites:
         <aside className="info-box">
           <h2>👤 Informations personnelles</h2>
           <form className="info-form">
+            {/* Affiche les champs info utilisateur en lecture seule */}
             {["lastName", "firstName", "email", "city"].map((field) => (
               <div className="info-row" key={field}>
                 <label>
@@ -152,17 +156,3 @@ export default function Profile({ favorites: sharedFavorites = [], setFavorites:
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

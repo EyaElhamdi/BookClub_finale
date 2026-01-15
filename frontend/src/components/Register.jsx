@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import api from "../services/api";
+import api from "../services/api"; // 🔹 Service axios préconfiguré
 import "../styles/Register.css";
-import { useAuth } from "../contexts/AuthContext";
-import useSafeTimeout from "../hooks/useSafeTimeout";
+import { useAuth } from "../contexts/AuthContext"; // 🔹 Context pour l'authentification
+import useSafeTimeout from "../hooks/useSafeTimeout"; // 🔹 Hook pour timeout sécurisé
 
 export default function Register() {
-  const navigate = useNavigate();
-  const { login } = useAuth();
+  const navigate = useNavigate(); // 🔹 Pour naviguer après inscription
+  const { login } = useAuth();    // 🔹 Pour mettre à jour le contexte auth après inscription
 
+  // 🔹 Formulaire avec tous les champs
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -21,14 +22,16 @@ export default function Register() {
     role: "user",
   });
 
-  const [errors, setErrors] = useState({});
-  const [serverMsg, setServerMsg] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const { setSafeTimeout } = useSafeTimeout();
+  const [errors, setErrors] = useState({});    // 🔹 Erreurs de validation côté client
+  const [serverMsg, setServerMsg] = useState(null); // 🔹 Message serveur (succès / erreur)
+  const [loading, setLoading] = useState(false);    // 🔹 Indique si la requête est en cours
+  const { setSafeTimeout } = useSafeTimeout();      // 🔹 Timeout sécurisé pour redirection
 
+  // 🔹 Mise à jour des champs
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
+  // 🔹 Validation simple des champs
   const validate = () => {
     const err = {};
     if (!form.firstName.trim()) err.firstName = "Prénom requis";
@@ -41,8 +44,11 @@ export default function Register() {
     return err;
   };
 
+  // 🔹 Soumission du formulaire
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // 🔹 Valider avant envoi
     const validationErrors = validate();
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length) return;
@@ -51,16 +57,21 @@ export default function Register() {
     setServerMsg(null);
 
     try {
+      // 🔹 Appel API pour créer le compte
       const res = await api.post("/register", form);
-      // update auth context (and localStorage via context)
+
+      // 🔹 Mettre à jour le contexte auth (login automatique)
       if (typeof login === "function") login(res.data.token, res.data.role || form.role);
 
+      // 🔹 Message succès
       setServerMsg({ type: "success", text: res.data.message });
 
+      // 🔹 Redirection sécurisée après 1s
       setSafeTimeout(() => {
         navigate(res.data.role === "admin" ? "/admin" : "/profile");
       }, 1000);
     } catch (err) {
+      // 🔹 Message d'erreur
       setServerMsg({
         type: "error",
         text: err.response?.data?.message || "Erreur serveur",
@@ -77,7 +88,7 @@ export default function Register() {
 
         <form className="register-form" onSubmit={handleSubmit} noValidate>
 
-          {/* Prénom / Nom */}
+          {/* 🔹 Prénom / Nom */}
           <div className="row">
             <div className="field">
               <input
@@ -100,7 +111,7 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Email */}
+          {/* 🔹 Email */}
           <div className="field">
             <input
               name="email"
@@ -111,7 +122,7 @@ export default function Register() {
             {errors.email && <div className="err">{errors.email}</div>}
           </div>
 
-          {/* Adresse */}
+          {/* 🔹 Adresse */}
           <div className="field">
             <input
               name="address"
@@ -121,7 +132,7 @@ export default function Register() {
             />
           </div>
 
-          {/* Ville / État */}
+          {/* 🔹 Ville / État */}
           <div className="row">
             <div className="field">
               <input
@@ -142,7 +153,7 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Mot de passe / Confirmation */}
+          {/* 🔹 Mot de passe / Confirmation */}
           <div className="row">
             <div className="field">
               <input
@@ -169,7 +180,7 @@ export default function Register() {
             </div>
           </div>
 
-          {/* Rôle */}
+          {/* 🔹 Rôle */}
           <div className="field">
             <select
               name="role"
@@ -182,10 +193,12 @@ export default function Register() {
             </select>
           </div>
 
+          {/* 🔹 Bouton submit */}
           <button className="submit-btn" type="submit" disabled={loading}>
             {loading ? "Inscription..." : "S'inscrire"}
           </button>
 
+          {/* 🔹 Message serveur */}
           {serverMsg && (
             <div className={`server-msg ${serverMsg.type}`}>
               {serverMsg.text}
@@ -193,7 +206,7 @@ export default function Register() {
           )}
         </form>
 
-        {/* 🔗 Lien login */}
+        {/* 🔗 Lien vers login */}
         <div className="login-link">
           Déjà un compte ? <Link to="/login">Se connecter</Link>
         </div>
@@ -201,15 +214,3 @@ export default function Register() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-

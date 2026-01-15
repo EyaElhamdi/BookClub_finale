@@ -1,13 +1,14 @@
 // src/components/EditProfile.jsx
 import React, { useState, useEffect } from "react";
-import api from "../services/api";
+import api from "../services/api"; // instance axios pour les requêtes
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import "../styles/EditProfile.css";
 
 export default function EditProfile() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // pour naviguer après sauvegarde ou déconnexion
 
+  // 🔹 État pour le formulaire de profil
   const [form, setForm] = useState({
     firstName: "",
     lastName: "",
@@ -18,15 +19,18 @@ export default function EditProfile() {
     password: "",
   });
 
+  // 🔹 État pour gérer l'aperçu de la photo
   const [photo, setPhoto] = useState(null);
 
+  // 🔹 Récupération du token et fonction logout depuis le contexte Auth
   const { token, logout } = useAuth();
 
-  // Charger le profil existant
+  // 🔹 useEffect pour charger le profil au montage
   useEffect(() => {
+    // Si pas de token → redirection vers login
     if (!token) return navigate("/login");
 
-    api.get("/profile")
+    api.get("/profile") // Requête GET pour récupérer les infos du profil
       .then((res) =>
         setForm({
           firstName: res.data.firstName || "",
@@ -35,40 +39,44 @@ export default function EditProfile() {
           address: res.data.address || "",
           city: res.data.city || "",
           state: res.data.state || "",
-          password: "",
+          password: "", // jamais pré-remplir le mot de passe
         })
       )
       .catch(() => {
+        // En cas d'erreur → logout et redirection
         if (typeof logout === "function") logout();
         navigate("/login");
       });
   }, [navigate, token, logout]);
 
-  // Gestion des changements d'input
+  // 🔹 Gestion des changements de champs de formulaire
   function handleChange(e) {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   }
 
-  // Gestion de la photo
+  // 🔹 Gestion du changement de photo
   function handlePhoto(e) {
-    const file = e.target.files[0];
+    const file = e.target.files[0]; // récupérer le fichier
     if (!file) return;
+
+    // Créer une URL temporaire pour afficher l'aperçu
     const url = URL.createObjectURL(file);
     setPhoto({ file, url });
   }
 
-  // Sauvegarder les modifications
+  // 🔹 Envoi des modifications au backend
   function handleSave(e) {
-    e.preventDefault();
-    api.put("/profile", form)
+    e.preventDefault(); // empêcher le rechargement de page
+
+    api.put("/profile", form) // PUT pour mettre à jour le profil
       .then(() => {
-        // Profil mis à jour, on navigue directement
+        // Rediriger vers la page profil après sauvegarde
         navigate("/profile");
       })
       .catch((err) => {
         console.error("Erreur API:", err.response ? err.response.data : err.message);
-        // Optionnel : afficher un message discret dans la page
+        // Optionnel : afficher un message utilisateur
       });
   }
 
@@ -77,11 +85,14 @@ export default function EditProfile() {
       <h1 className="edit-title">Modifier le Profil</h1>
 
       <form className="edit-card" onSubmit={handleSave}>
+        {/* Zone de photo */}
         <div className="photo-area">
           <div className="avatar">
             {photo ? (
+              // Affichage de l'aperçu de la nouvelle photo
               <img src={photo.url} alt="avatar" />
             ) : (
+              // Placeholder SVG si pas de photo
               <div className="avatar-placeholder">
                 <svg
                   width="34"
@@ -102,12 +113,14 @@ export default function EditProfile() {
             )}
           </div>
 
+          {/* Bouton pour changer la photo */}
           <label className="change-photo">
             Changer la photo
             <input type="file" accept="image/*" onChange={handlePhoto} />
           </label>
         </div>
 
+        {/* Champs du formulaire */}
         <div className="inputs">
           <div className="row two">
             <input
@@ -161,6 +174,7 @@ export default function EditProfile() {
           />
         </div>
 
+        {/* Bouton de sauvegarde */}
         <div className="actions">
           <button type="submit" className="btn save">
             Enregistrer
@@ -170,8 +184,3 @@ export default function EditProfile() {
     </div>
   );
 }
-
-
-
-
-

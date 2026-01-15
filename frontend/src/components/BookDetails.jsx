@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams, Link, useLocation } from "react-router-dom";
-import axios from "axios"; // on utilise axios directement si api.js n'existe pas
+import { useParams, useLocation } from "react-router-dom";
+import axios from "axios";
 import { useAuth } from "../contexts/AuthContext";
-import ReviewSection from "./ReviewSection";
-import ReadingStatus from "./ReadingStatus";
 import "../styles/BookDetails.css";
 
 export default function BookDetails({ favorites = [], setFavorites, onAddFavorite, onRemoveFavorite, isModal = false, onClose }) {
@@ -13,7 +11,6 @@ export default function BookDetails({ favorites = [], setFavorites, onAddFavorit
   const [book, setBook] = useState(initialBook || null);
   const [expanded, setExpanded] = useState(false);
   const [showExcerpt, setShowExcerpt] = useState(false);
-  const [copiedMessage, setCopiedMessage] = useState("");
   const [editing, setEditing] = useState(false);
   const [editForm, setEditForm] = useState({ 
     title: '', 
@@ -62,7 +59,6 @@ export default function BookDetails({ favorites = [], setFavorites, onAddFavorit
 
   const longDesc = book.longDescription || book.description || "Pas de description disponible.";
   const short = longDesc.slice(0, 420);
-
   const teaser = book.teaser || (longDesc.slice(0, 160) + (longDesc.length > 160 ? '…' : ''));
   const characters = book.characters || [];
   const chapters = book.chapters || [];
@@ -105,12 +101,8 @@ export default function BookDetails({ favorites = [], setFavorites, onAddFavorit
         document.execCommand('copy');
         document.body.removeChild(el);
       }
-      setCopiedMessage('Lien copié !');
-      setTimeout(() => setCopiedMessage(''), 1800);
     } catch (err) {
       console.error('Copy failed', err);
-      setCopiedMessage('Erreur lors de la copie');
-      setTimeout(() => setCopiedMessage(''), 1800);
     }
   };
 
@@ -279,7 +271,6 @@ export default function BookDetails({ favorites = [], setFavorites, onAddFavorit
               <button className="secondary" onClick={() => setShowExcerpt(true)}>Lire un extrait</button>
               <button className="secondary" onClick={handleCopyLink}>Copier le lien</button>
               <button className="secondary" onClick={handleShare}>Partager</button>
-              {copiedMessage && <span className="share-feedback">{copiedMessage}</span>}
             </div>
           </div>
 

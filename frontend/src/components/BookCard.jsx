@@ -6,42 +6,49 @@ import { useAuth } from "../contexts/AuthContext";
 import { getImageUrl, SVG_PLACEHOLDER } from "../services/imageLoader";
 
 export default function BookCard({ book, onDelete, favorites = [], setFavorites, onAddFavorite, onRemoveFavorite }) {
-  const location = useLocation();
-  const { role } = useAuth();
-  const isCreator = role === 'creator';
-  
-  const initial = getImageUrl(book.image);
-  const [src, setSrc] = useState(initial);
+  const location = useLocation(); // Récupère l'URL actuelle pour passer comme état au Link
+  const { role } = useAuth(); // Récupère le rôle de l'utilisateur
+  const isCreator = role === 'creator'; // Vérifie si l'utilisateur peut supprimer/modifier
+
+  // Gestion de l'image
+  const initial = getImageUrl(book.image); // Récupère l'image ou un placeholder
+  const [src, setSrc] = useState(initial); // Stocke l'URL de l'image affichée
 
   React.useEffect(()=>{
     console.debug("BookCard image resolved:", src, "for book:", book && book.title);
-  },[src, book]);
+  },[src, book]); // Debug : affiche dans la console quand l'image change
 
   const handleError = () => {
+    // Si l'image ne charge pas, on utilise le placeholder
     if (src !== SVG_PLACEHOLDER) {
       console.warn(`[BookCard] Image load failed, using placeholder for: ${book.title}`);
       setSrc(SVG_PLACEHOLDER);
     }
   };
 
-  // Vérifie si le livre est déjà dans les favoris
-  const isRtl = book && (book.rtl || (book.language && (book.language === 'ar' || book.language === 'العربية')));
-  const isFav = favorites.some((f) => f._id === book._id);
+  // Détection des favoris et du sens de lecture
+  const isRtl = book && (book.rtl || (book.language && (book.language === 'ar' || book.language === 'العربية'))); // RTL pour arabe
+  const isFav = favorites.some((f) => f._id === book._id); // Déjà favori ?
 
-  // Ajouter ou retirer des favoris
+  // State pour modals
+  const [showConfirm, setShowConfirm] = useState(false); // Modal suppression
+  const [showUnfavConfirm, setShowUnfavConfirm] = useState(false); // Modal retrait favoris
+
+  // Ajouter ou retirer un favori
   const toggleFavorite = (e) => {
-    e && e.stopPropagation();
+    e && e.stopPropagation(); // Empêche le clic de se propager à d'autres éléments
+
     const exists = favorites.some((f) => f._id === book._id);
     if (exists) {
-      // show confirmation before removing from favorites
+      // Si déjà favori, afficher modal de confirmation pour le retirer
       return setShowUnfavConfirm(true);
     }
 
-    // add
-    if (typeof onAddFavorite === "function") return onAddFavorite(book);
-    if (!setFavorites) return;
-    
-    // Create favorite object with all needed properties
+    // Ajouter aux favoris
+    if (typeof onAddFavorite === "function") return onAddFavorite(book); // Callback externe si fourni
+    if (!setFavorites) return; // Si aucun moyen de mettre à jour le state, sortir
+
+    // Création de l'objet favori
     const favObject = {
       _id: book._id,
       title: book.title,
@@ -52,7 +59,8 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
       teaser: book.teaser,
       year: book.year
     };
-    
+
+    // Met à jour le state local des favoris
     setFavorites((prev = []) => {
       const updated = [...prev, favObject];
       console.log('[BookCard] Added to favorites:', favObject);
@@ -61,12 +69,11 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
     });
   };
 
-  // Supprimer un livre (seulement pour créateurs et livres du backend)
-  const isManualBook = book._id && book._id.startsWith('m');
-  const canDeleteBook = isCreator && !isManualBook;
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [showUnfavConfirm, setShowUnfavConfirm] = useState(false);
-  const handleDeleteClick = async () => setShowConfirm(true);
+  // Suppression d'un livre
+  const isManualBook = book._id && book._id.startsWith('m'); // Les livres manuels ne peuvent pas être supprimés
+  const canDeleteBook = isCreator && !isManualBook; // Vérifie si suppression autorisée
+
+  const handleDeleteClick = async () => setShowConfirm(true); // Ouvre la modal de suppression
   const confirmDelete = async () => {
     try {
       if (onDelete) onDelete(book._id); // Supprime localement
@@ -75,20 +82,21 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
       console.error("Erreur lors de la suppression :", err);
       alert("Impossible de supprimer le livre. Vérifiez la console.");
     } finally {
-      setShowConfirm(false);
+      setShowConfirm(false); // Ferme la modal
     }
   };
 
+  // Confirmer le retrait d'un favori
   const confirmUnfav = () => {
     try {
       console.log('[BookCard] Removing from favorites:', book._id);
-      
-      // Call both methods to ensure state is updated everywhere
+
+      // Callback externe si fourni
       if (typeof onRemoveFavorite === "function") {
         onRemoveFavorite(book);
       }
-      
-      // Also update setFavorites directly to ensure state sync
+
+      // Mise à jour locale des favoris
       if (setFavorites) {
         setFavorites((prev = []) => {
           const updated = prev.filter((f) => f._id !== book._id);
@@ -97,7 +105,7 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
         });
       }
     } finally {
-      setShowUnfavConfirm(false);
+      setShowUnfavConfirm(false); // Ferme la modal
     }
   };
 
@@ -114,14 +122,13 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
           src={src}
           alt={book.title}
           loading="lazy"
-          onError={handleError}
+          onError={handleError} // Placeholder si image ne charge pas
         />
 
-        {/* Debug: show resolved src if image doesn't display */}
-
-
         <div className="overlay">
-          <Link className="cta" to={`/books/${book._id}`} state={{ background: location, book }}>Voir plus</Link>
+          <Link className="cta" to={`/books/${book._id}`} state={{ background: location, book }}>
+            Voir plus
+          </Link>
         </div>
       </div>
 
@@ -139,6 +146,8 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
           )}
         </div>
       </div>
+
+      {/* Modals de confirmation */}
       <ConfirmModal
         isOpen={showConfirm}
         title="Supprimer le livre"
@@ -156,5 +165,3 @@ export default function BookCard({ book, onDelete, favorites = [], setFavorites,
     </div>
   );
 }
-
-
